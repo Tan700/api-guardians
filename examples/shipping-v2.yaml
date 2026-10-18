@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: Logistics API
+  version: 2.0.0
+paths:
+  /shipments/{shipment_id}:
+    get:
+      summary: Get shipment details
+      parameters:
+        - name: shipment_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: include_events
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Shipment details
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [shipment_id, delivery_date]
+                properties:
+                  shipment_id:
+                    type: string
+                  delivery_date:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                    enum: [created, in_transit, delivered, exception]
+                  carrier_name:
+                    type: string
+  /warehouses:
+    get:
+      summary: List available warehouses
+      responses:
+        "200":
+          description: Warehouse list

@@ -1,0 +1,55 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "ParcelFlow Shipping API", "version": "1.0.0" },
+  "paths": {
+    "/shipments/{shipmentId}/tracking": {
+      "get": {
+        "summary": "Get shipment tracking",
+        "parameters": [
+          { "name": "shipmentId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracking details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["shipment_id", "status"],
+                  "properties": {
+                    "shipment_id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["created", "in_transit", "delivered"] },
+                    "estimated_delivery": { "type": "string", "format": "date" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Shipment not found" }
+        }
+      }
+    },
+    "/shipments": {
+      "post": {
+        "summary": "Create a shipment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["customer_id", "destination"],
+                "properties": {
+                  "customer_id": { "type": "string" },
+                  "destination": { "type": "string" },
+                  "package_weight_kg": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Shipment created" } }
+      }
+    }
+  }
+}

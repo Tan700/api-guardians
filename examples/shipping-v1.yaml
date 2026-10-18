@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Logistics API
+  version: 1.0.0
+paths:
+  /shipments/{shipment_id}:
+    get:
+      summary: Get shipment details
+      parameters:
+        - name: shipment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Shipment details
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [shipment_id, estimated_delivery]
+                properties:
+                  shipment_id:
+                    type: string
+                  estimated_delivery:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                    enum: [created, in_transit, delivered]

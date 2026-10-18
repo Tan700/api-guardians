@@ -1,0 +1,65 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "ParcelFlow Shipping API", "version": "2.0.0" },
+  "paths": {
+    "/shipments/{shipmentId}/tracking": {
+      "get": {
+        "summary": "Get shipment tracking",
+        "parameters": [
+          { "name": "shipmentId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracking details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["shipment_id", "status", "delivery_date"],
+                  "properties": {
+                    "shipment_id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["created", "in_transit", "delivered"] },
+                    "delivery_date": { "type": "string", "format": "date" },
+                    "carrier_name": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shipments": {
+      "post": {
+        "summary": "Create a shipment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["customer_id", "destination", "carrier_code"],
+                "properties": {
+                  "customer_id": { "type": "string" },
+                  "destination": { "type": "string" },
+                  "package_weight_kg": { "type": "number" },
+                  "carrier_code": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Shipment created" } }
+      }
+    },
+    "/shipments/{shipmentId}/events": {
+      "get": {
+        "summary": "List shipment events",
+        "parameters": [
+          { "name": "shipmentId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Event history" } }
+      }
+    }
+  }
+}

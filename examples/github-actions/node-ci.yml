@@ -1,0 +1,47 @@
+name: API Guardian CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Tests and validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Require a package manifest and test script
+        run: |
+          if [ ! -f package.json ]; then
+            echo "::error::This workflow expects a Node.js repository with package.json. Add a package manifest and test script, or use a workflow suitable for your language."
+            exit 1
+          fi
+          node -e "const p=require('./package.json'); if (!p.scripts || !p.scripts.test) { console.error('Add a scripts.test command before relying on automated checks.'); process.exit(1); }"
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run tests
+        run: npm test
+
+      - name: Typecheck when configured
+        run: npm run typecheck --if-present
+
+      - name: Build when configured
+        run: npm run build --if-present
